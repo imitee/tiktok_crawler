@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2022/4/24
-# @Author  :Eric Wan
+# @Author  : Eric W
 # 获取抖音直播间数据流
+
 import uuid
 import live_url as liveUrl
 import os
@@ -17,7 +18,7 @@ def filterResponse(response):
             print("url数据写入:", response.url)
             file.write(response.body())
     else:
-        # print("--", response.url)
+        print("--", response.url)
         pass
     return response
 
@@ -29,11 +30,13 @@ def log_request(intercepted_request):
 
 # 新建浏览器页面
 def run(pw):
+    # 初始化
     browser = pw.webkit.launch(headless=True)
+    # 新建页面
     page = browser.new_page()
-
+    # 开始获取
     page.on("response", filterResponse)
-    # 直播间 地址  你们自己写
+    # 直播间地址
     page.goto(liveUrl.url())
     return page
 
@@ -42,18 +45,19 @@ def run(pw):
 def startMonitoring():
     with playwright() as pw:
         page = run(pw)
-        # 直播间停留时间 单位ms 需要你们自己敲定  也可以永久驻留
+        # 直播间停留时间 单位ms 自行确定,也可以永久驻留
         page.wait_for_timeout(100000000)
 
 
 # 主程序
 if __name__ == '__main__':
-    # 判断文件夹
+    # 清空原来数据流
     if not os.path.exists("douyinLiveFile"):
         os.mkdir("douyinLiveFile")
     else:
         shutil.rmtree("douyinLiveFile")
         os.mkdir("douyinLiveFile")
 
+    # 开始获取
     startMonitoring()
     # https://live.douyin.com/webcast/im/fetch/
