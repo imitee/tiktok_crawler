@@ -5,6 +5,7 @@
 import uuid
 import live_url as liveUrl
 import os
+import shutil
 
 from playwright.sync_api import sync_playwright as playwright
 
@@ -12,9 +13,8 @@ from playwright.sync_api import sync_playwright as playwright
 # 请求直播间获取数据流
 def filterResponse(response):
     if 'https://live.douyin.com/webcast/im/fetch/' in response.url:
-        print("url: ", response.url)
         with open('./douyinLiveFile/' + uuid.uuid4().hex, 'wb') as file:
-            print("写入")
+            print("url数据写入:", response.url)
             file.write(response.body())
     else:
         # print("--", response.url)
@@ -51,5 +51,9 @@ if __name__ == '__main__':
     # 判断文件夹
     if not os.path.exists("douyinLiveFile"):
         os.mkdir("douyinLiveFile")
+    else:
+        shutil.rmtree("douyinLiveFile")
+        os.mkdir("douyinLiveFile")
+
     startMonitoring()
     # https://live.douyin.com/webcast/im/fetch/
