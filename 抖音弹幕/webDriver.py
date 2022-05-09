@@ -12,10 +12,10 @@ from playwright.sync_api import sync_playwright as playwright
 
 
 # 请求直播间获取数据流
-def filterResponse(response):
+def filter_response(response):
     if 'https://live.douyin.com/webcast/im/fetch/' in response.url:
         with open('./douyinLiveFile/' + uuid.uuid4().hex, 'wb') as file:
-            print("url数据写入:", response.url)
+            print("url data:", response.url)
             file.write(response.body())
     else:
         print("--", response.url)
@@ -35,14 +35,14 @@ def run(pw):
     # 新建页面
     page = browser.new_page()
     # 开始获取
-    page.on("response", filterResponse)
+    page.on("response", filter_response)
     # 直播间地址
     page.goto(liveUrl.url())
     return page
 
 
 # 开始请求数据流
-def startMonitoring():
+def start_monitoring():
     with playwright() as pw:
         page = run(pw)
         # 直播间停留时间 单位ms 自行确定,也可以永久驻留
@@ -59,5 +59,5 @@ if __name__ == '__main__':
         os.mkdir("douyinLiveFile")
 
     # 开始获取
-    startMonitoring()
+    start_monitoring()
     # https://live.douyin.com/webcast/im/fetch/
